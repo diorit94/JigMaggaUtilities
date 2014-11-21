@@ -1,10 +1,10 @@
 {
   "name": "jmUtil",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "node utility library for JigMagga project",
   "main": "index.js",
   "scripts": {
-    "test": "mocha -R spec --recursive ./test"
+    "test": "mocha -R spec --recurdd sive ./test"
   },
   "repository": {
     "type": "git",
@@ -49,7 +49,8 @@
     "gettext": "0.0.1",
     "knox": "^0.9.0",
     "lodash": "^2.4.1",
-    "mime": "^1.2.11"
+    "mime": "^1.2.11",
+    "winston": "^0.8.3"
   },
   "devDependencies": {
     "chai": "^1.9.1",

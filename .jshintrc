@@ -9,7 +9,6 @@
     "jquery": true,
     "node": true,
     "worker": true,
-    "onevar": true,
     "browser": true,
     "curly": true,
     "eqnull": true,
