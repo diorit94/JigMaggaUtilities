@@ -1,6 +1,6 @@
 {
   "name": "jmUtil",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "node utility library for JigMagga project",
   "main": "index.js",
   "scripts": {
