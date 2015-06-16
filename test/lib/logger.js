@@ -29,7 +29,7 @@ var winstonMock = {
 
 
 describe('logger', function () {
-    describe.only('#getLogger', function () {
+    describe('#getLogger', function () {
         var getLogger;
         beforeEach(function () {
             logger.__set__('winston', winstonMock);
