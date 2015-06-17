@@ -1,4 +1,4 @@
-/*global describe, it, before: true*/
+/*global describe, it, beforeEach: true*/
 
 'use strict';
 
@@ -62,17 +62,11 @@ describe('configMerge', function () {
             page = 'menu',
             fsReadFileStub;
 
-        before(function () {
+        beforeEach(function () {
             fsReadFileStub = sinon.stub();
             fsStub = {
                 readFile: fsReadFileStub
             };
-
-            configMerge.__set__('fs', fsStub);
-        });
-
-
-        it('should return merged configs', function (done) {
 
             fsReadFileStub.callsArgWithAsync(1, {code: 'ENOENT'});
 
@@ -82,10 +76,53 @@ describe('configMerge', function () {
             fsReadFileStub.withArgs(join(basePath, 'default/default.conf'))
                 .callsArgWithAsync(1, null, JSON.stringify(defaultConfig));
 
+            configMerge.__set__('fs', fsStub);
+            configMerge.__set__('configStorage', {});
+            configMerge.__set__('fullConfigStorage', {});
+        });
+
+
+
+        it('should return merged configs', function (done) {
 
             configMerge.getPageConfig(basePath, domain, page, function (err, res) {
                 expect(Boolean(err)).to.eql(false);
 
+                expect(res).to.eql(extend(pageConfig, defaultConfig));
+                done();
+            });
+        });
+
+        it('should execute default onEnoent function if it is not setted', function (done) {
+
+            var onEnoent = sinon.stub();
+            var defaultOnEnoent = configMerge.__get__('defaultOnEnoent');
+            configMerge.__set__('defaultOnEnoent', onEnoent);
+
+            onEnoent.callsArgWithAsync(1, null, {});
+
+            configMerge.getPageConfig(basePath, domain, page, function (err, res) {
+                expect(Boolean(err)).to.eql(false);
+
+                console.log(onEnoent.callCount);
+                expect(onEnoent.called).to.eql(true);
+                expect(res).to.eql(extend(pageConfig, defaultConfig));
+                configMerge.__set__('defaultOnEnoent', defaultOnEnoent);
+                done();
+            });
+        });
+
+        it('should execute onEnoent function if it is present ', function (done) {
+
+            var onEnoent = sinon.stub();
+
+            onEnoent.callsArgWithAsync(1, null, {});
+
+            configMerge.getPageConfig(basePath, domain, page, onEnoent, function (err, res) {
+                expect(Boolean(err)).to.eql(false);
+
+                console.log(onEnoent.callCount);
+                expect(onEnoent.called).to.eql(true);
                 expect(res).to.eql(extend(pageConfig, defaultConfig));
                 done();
             });
