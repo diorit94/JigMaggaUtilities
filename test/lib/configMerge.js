@@ -27,9 +27,36 @@ describe('configMerge', function () {
                 expect(res).to.eql([
                     join(basePath, 'page.conf'),
                     join(basePath, 'default/default.conf'),
-                    join(basePath, 'default', page, page + '.conf'),
                     join(basePath, domain, domain + '.conf'),
+                    join(basePath, 'default', page, page + '.conf'),
                     join(basePath, domain, page, page + '.conf')
+                ]);
+                done();
+            });
+        });
+
+        it('should return all possible paths for a satellite page if all config files exists', function (done) {
+            var domain = 'satellites.lieferando.de/normal/pizzamannbonn.de',
+                page = 'satellites/normal/success';
+            var domainSubFolders = domain.split("/"),
+                pageSubFolders = page.split("/");
+
+            configMerge.getConfigPaths(basePath, domain, page, function (err, res) {
+                expect(err).to.eql(null);
+                console.log(res);
+                expect(res).to.be.an('array');
+                expect(res).to.eql([
+                    join(basePath, 'page.conf'),
+                    join(basePath, 'default/default.conf'),
+                    join(basePath, domainSubFolders[0], domainSubFolders[0] + '.conf'),
+                    join(basePath, 'default', pageSubFolders[0], pageSubFolders[1], pageSubFolders[1] + '.conf'),
+                    join(basePath, domainSubFolders[0], domainSubFolders[1], domainSubFolders[1] + '.conf'),
+                    join(basePath, domain, domainSubFolders[2]+ '.conf'),
+                    join(basePath,'default' , pageSubFolders[0], pageSubFolders[0]+ '.conf'),
+                    join(basePath, domain, pageSubFolders[0], pageSubFolders[0] + '.conf'),
+                    join(basePath, domain, pageSubFolders[0],pageSubFolders[1],pageSubFolders[1] + '.conf'),
+                    join(basePath, 'default' ,pageSubFolders[0],pageSubFolders[1],pageSubFolders[2], pageSubFolders[2] + '.conf'),
+                    join(basePath, domain, pageSubFolders[0],pageSubFolders[1],pageSubFolders[2], pageSubFolders[2] + '.conf')
                 ]);
                 done();
             });
