@@ -129,4 +129,180 @@ describe('configMerge', function () {
         });
 
     });
+
+    describe('#extendApiCallsWithModels', function () {
+        var extendApiCallsWithModels = configMerge.__get__('extendApiCallsWithModels');
+
+        var input = {
+            jigs: {
+                ".yd-jig-partnerdiscount": {
+                    "controller": "Yd.Jig.Partnerdiscount",
+                    "template": "yd/jig/partnerdiscount/views/init.mustache",
+                    "prerender": false,
+                    "render": false,
+                    "includeController": true,
+                    "models": ["@yd-models-restaurant#restaurant"],
+                    "apicalls": {
+                        "foo" : {
+                            "method": "get",
+                            "path": "/restaurant/{restaurantId}",
+                            "predefined": true,
+                            "resultSchema": "//yd/fixture/schema/restaurant.json"
+                        }
+                    }
+                },
+                "@yd-models-restaurant": {
+                    "disabled": true,
+                    "controller": "Yd.Models.Restaurant",
+                    "mapper": "yd/models/restaurant/mapper.js",
+                    "options": {},
+                    "apicalls": {
+                        "restaurant": {
+                            "method": "get",
+                            "path": "/restaurant/{restaurantId}",
+                            "predefined": true,
+                            "resultSchema": "//yd/fixture/schema/restaurant.json"
+                        },
+                        "restaurants": {
+                            "method": "get",
+                            "path": "/restaurants/",
+                            "predefined": true,
+                            "resultSchema": "//yd/fixture/schema/restaurant.json"
+                        }
+                    }
+                }
+            }
+        };
+
+        it('should extend apicalls with model referrence ', function () {
+            var output = {
+                jigs: {
+                    ".yd-jig-partnerdiscount": {
+                        "controller": "Yd.Jig.Partnerdiscount",
+                        "template": "yd/jig/partnerdiscount/views/init.mustache",
+                        "prerender": false,
+                        "render": false,
+                        "includeController": true,
+                        "models": [
+                            "@yd-models-restaurant#restaurant"
+                        ],
+                        "apicalls": {
+                            "restaurant": {
+                                "method": "get",
+                                "path": "/restaurant/{restaurantId}",
+                                "predefined": true,
+                                "resultSchema": "//yd/fixture/schema/restaurant.json"
+                            },
+                            "foo" : {
+                                "method": "get",
+                                "path": "/restaurant/{restaurantId}",
+                                "predefined": true,
+                                "resultSchema": "//yd/fixture/schema/restaurant.json"
+                            }
+                        }
+
+                    }
+                },
+                "models": {
+                    "@yd-models-restaurant": {
+                        "disabled": true,
+                        "controller": "Yd.Models.Restaurant",
+                        "mapper": "yd/models/restaurant/mapper.js",
+                        "options": {},
+                        "apicalls": {
+                            "restaurant": {
+                                "method": "get",
+                                "path": "/restaurant/{restaurantId}",
+                                "predefined": true,
+                                "resultSchema": "//yd/fixture/schema/restaurant.json"
+                            },
+                            "restaurants": {
+                                "method": "get",
+                                "path": "/restaurants/",
+                                "predefined": true,
+                                "resultSchema": "//yd/fixture/schema/restaurant.json"
+                            }
+
+                        }
+                    }
+                }
+            };
+
+            expect(extendApiCallsWithModels(input)).to.eql(output);
+        });
+        
+        it('should extend apicalls with all calls in model if no method name provided', function () {
+            var input = {
+                jigs: {
+                    ".yd-jig-partnerdiscount": {
+                        "models": ["@yd-models-restaurant"]
+                    },
+                    "@yd-models-restaurant": {
+                        "mapper": "yd/models/restaurant/mapper.js",
+                        "options": {},
+                        "apicalls": {
+                            "restaurant": {
+                                "method": "get",
+                                "path": "/restaurant/{restaurantId}",
+                                "predefined": true,
+                                "resultSchema": "//yd/fixture/schema/restaurant.json"
+                            },
+                            "restaurants": {
+                                "method": "get",
+                                "path": "/restaurants/",
+                                "predefined": true,
+                                "resultSchema": "//yd/fixture/schema/restaurant.json"
+                            }
+                        }
+                    }
+                }
+            };
+            var output = {
+                jigs: {
+                    ".yd-jig-partnerdiscount": {
+                        "models": [
+                            "@yd-models-restaurant"
+                        ],
+                        "apicalls": {
+                            "restaurant": {
+                                "method": "get",
+                                "path": "/restaurant/{restaurantId}",
+                                "predefined": true,
+                                "resultSchema": "//yd/fixture/schema/restaurant.json"
+                            },
+                            "restaurants": {
+                                "method": "get",
+                                "path": "/restaurants/",
+                                "predefined": true,
+                                "resultSchema": "//yd/fixture/schema/restaurant.json"
+                            }
+                        }
+
+                    }
+                },
+                "models": {
+                    "@yd-models-restaurant": {
+                        "mapper": "yd/models/restaurant/mapper.js",
+                        "options": {},
+                        "apicalls": {
+                            "restaurant": {
+                                "method": "get",
+                                "path": "/restaurant/{restaurantId}",
+                                "predefined": true,
+                                "resultSchema": "//yd/fixture/schema/restaurant.json"
+                            },
+                            "restaurants": {
+                                "method": "get",
+                                "path": "/restaurants/",
+                                "predefined": true,
+                                "resultSchema": "//yd/fixture/schema/restaurant.json"
+                            }
+                        }
+                    }
+                }
+            };
+
+            expect(extendApiCallsWithModels(input)).to.eql(output);
+        });
+    });
 });
