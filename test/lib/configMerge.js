@@ -189,6 +189,7 @@ describe('configMerge', function () {
                         "apicalls": {
                             "restaurant": {
                                 "method": "get",
+                                "mapper": "yd/models/restaurant/mapper.js",
                                 "path": "/restaurant/{restaurantId}",
                                 "predefined": true,
                                 "resultSchema": "//yd/fixture/schema/restaurant.json"
@@ -211,6 +212,7 @@ describe('configMerge', function () {
                         "options": {},
                         "apicalls": {
                             "restaurant": {
+                                "mapper": "yd/models/restaurant/mapper.js",
                                 "method": "get",
                                 "path": "/restaurant/{restaurantId}",
                                 "predefined": true,
@@ -236,6 +238,9 @@ describe('configMerge', function () {
                 jigs: {
                     ".yd-jig-partnerdiscount": {
                         "models": ["@yd-models-restaurant"]
+                    },
+                    ".yd-jig-partnerdiscount2": {
+                        "FOO": ["BAR"]
                     },
                     "@yd-models-restaurant": {
                         "mapper": "yd/models/restaurant/mapper.js",
@@ -265,12 +270,14 @@ describe('configMerge', function () {
                         ],
                         "apicalls": {
                             "restaurant": {
+                                "mapper": "yd/models/restaurant/mapper.js",
                                 "method": "get",
                                 "path": "/restaurant/{restaurantId}",
                                 "predefined": true,
                                 "resultSchema": "//yd/fixture/schema/restaurant.json"
                             },
                             "restaurants": {
+                                "mapper": "yd/models/restaurant/mapper.js",
                                 "method": "get",
                                 "path": "/restaurants/",
                                 "predefined": true,
@@ -278,6 +285,9 @@ describe('configMerge', function () {
                             }
                         }
 
+                    },
+                    ".yd-jig-partnerdiscount2": {
+                        "FOO": ["BAR"]
                     }
                 },
                 "models": {
@@ -286,12 +296,14 @@ describe('configMerge', function () {
                         "options": {},
                         "apicalls": {
                             "restaurant": {
+                                "mapper": "yd/models/restaurant/mapper.js",
                                 "method": "get",
                                 "path": "/restaurant/{restaurantId}",
                                 "predefined": true,
                                 "resultSchema": "//yd/fixture/schema/restaurant.json"
                             },
                             "restaurants": {
+                                "mapper": "yd/models/restaurant/mapper.js",
                                 "method": "get",
                                 "path": "/restaurants/",
                                 "predefined": true,
@@ -301,8 +313,8 @@ describe('configMerge', function () {
                     }
                 }
             };
-
-            expect(extendApiCallsWithModels(input)).to.eql(output);
+            var res = extendApiCallsWithModels(input);
+            expect(res).to.eql(output);
         });
     });
 });
